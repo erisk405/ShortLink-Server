@@ -9,7 +9,7 @@ import { IpInfoGeoLocationService } from "./ipInfoGeoLocationService";
 dotenv.config();
 const app: Express = express();
 const PORT: number = parseInt(process.env.PORT || "8080", 10);
-const allowedOrigins = [process.env.CLIENT_URL, "http://localhost:3000"];
+const allowedOrigins = [`${process.env.CLIENT_URL}`, "http://localhost:5173"];
 const urlRepository = new PrismaUrlRepository();
 const geoLocationService = new IpInfoGeoLocationService(process.env.IPINFO_API_KEY || "");
 const urlService = new UrlService(urlRepository, geoLocationService);
