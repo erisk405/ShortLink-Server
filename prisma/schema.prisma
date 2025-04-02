@@ -1,0 +1,35 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model ShortUrl {
+  id          Int      @id @default(autoincrement())
+  originalUrl String   @map("original_url") // URL เดิมที่ยาว
+  shortCode   String   @unique // รหัสสั้นที่ generate มา
+  createdAt   DateTime @default(now()) @map("created_at") // วันที่สร้าง
+  updatedAt   DateTime @updatedAt @map("updated_at") // วันที่อัพเดท
+  clicks      Click[] // ความสัมพันธ์กับตาราง Click
+
+  @@map("short_urls") // ชื่อตารางใน database
+}
+
+model Click {
+  id         Int      @id @default(autoincrement())
+  shortUrlId Int      @map("short_url_id")
+  clickedAt  DateTime @default(now()) @map("clicked_at")
+  ipAddress  String?  @map("ip_address") // optional: เก็บ IP
+  shortUrl   ShortUrl @relation(fields: [shortUrlId], references: [id])
+
+  @@map("clicks")
+}
