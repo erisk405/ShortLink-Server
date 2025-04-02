@@ -49,8 +49,8 @@ export class UrlService {
 
   async getLocationStats({ shortCode, originalUrl }: { shortCode?: string; originalUrl?: string }): Promise<LocationStats> {
     if (!shortCode && !originalUrl) throw new Error("Must provide either shortCode or originalUrl");
-    console.log("shortCode", shortCode);
-    console.log("originalUrl", originalUrl);
+    // console.log("shortCode", shortCode);
+    // console.log("originalUrl", originalUrl);
     return this.urlRepository.getLocationStats({ shortCode, originalUrl });
   }
 
