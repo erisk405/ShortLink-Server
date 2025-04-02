@@ -12,7 +12,7 @@ export class UrlService {
   async shortenUrl(originalUrl: string): Promise<string> {
     const existingUrl = await this.urlRepository.findByOriginalUrl(originalUrl);
     if (existingUrl) {
-      return `http://localhost:8080/${existingUrl.shortCode}`;
+      return `${process.env.BASE_URL}/${existingUrl.shortCode}`;
     }
 
     const newUrl = await this.urlRepository.create(originalUrl, "");
@@ -21,7 +21,7 @@ export class UrlService {
     const uniqueNum = newUrl.id * 1000000 + (randomValue % 1000000);
     const shortCode = base62.encode(uniqueNum);
     await this.urlRepository.updateShortCode(newUrl.id, shortCode);
-    return `http://localhost:8080/${shortCode}`;
+    return `${process.env.BASE_URL}/${shortCode}`;
   }
 
   async redirectUrl(shortCode: string, ipAddress?: string): Promise<string> {
