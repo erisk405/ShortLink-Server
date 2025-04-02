@@ -25,11 +25,22 @@ model ShortUrl {
 }
 
 model Click {
-  id         Int      @id @default(autoincrement())
-  shortUrlId Int      @map("short_url_id")
-  clickedAt  DateTime @default(now()) @map("clicked_at")
-  ipAddress  String?  @map("ip_address") // optional: เก็บ IP
-  shortUrl   ShortUrl @relation(fields: [shortUrlId], references: [id])
+  id          Int          @id @default(autoincrement())
+  shortUrlId  Int          @map("short_url_id")
+  clickedAt   DateTime     @default(now()) @map("clicked_at")
+  ipAddress   String?      @map("ip_address") // optional: เก็บ IP
+  shortUrl    ShortUrl     @relation(fields: [shortUrlId], references: [id])
+  geoLocation GeoLocation?
 
   @@map("clicks")
+}
+
+model GeoLocation {
+  id        Int     @id @default(autoincrement())
+  clickId   Int     @unique
+  country   String?
+  city      String?
+  latitude  Float?
+  longitude Float?
+  click     Click   @relation(fields: [clickId], references: [id])
 }

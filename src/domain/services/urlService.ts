@@ -1,9 +1,13 @@
-import { UrlRepository } from "../../ports/urlRepository";
+import { UrlRepository, LocationStats, UrlHistoryItem } from "../../ports/urlRepository";
+import { GeoLocationService } from "../../ports/geoLocationService";
 import base62 from "base62";
 import crypto from "crypto";
 
 export class UrlService {
-  constructor(private urlRepository: UrlRepository) {}
+  constructor(
+    private urlRepository: UrlRepository,
+    private geoLocationService?: GeoLocationService
+  ) { }
 
   async shortenUrl(originalUrl: string): Promise<string> {
     const existingUrl = await this.urlRepository.findByOriginalUrl(originalUrl);
@@ -23,20 +27,36 @@ export class UrlService {
   async redirectUrl(shortCode: string, ipAddress?: string): Promise<string> {
     const url = await this.urlRepository.findByShortCode(shortCode);
     if (!url) throw new Error("Short URL not found");
-    await this.urlRepository.incrementClick(shortCode, ipAddress);
+
+    const clickId = await this.urlRepository.incrementClick(shortCode, ipAddress);
+
+    if (this.geoLocationService && ipAddress) {
+      try {
+        const geoData = await this.geoLocationService.getLocationFromIp(ipAddress);
+        await this.urlRepository.saveGeoLocation(clickId, geoData);
+      } catch (error) {
+        console.error("Error processing geolocation:", error);
+      }
+    }
+
     return url.originalUrl;
   }
 
   async getClickStats({ shortCode, originalUrl }: { shortCode?: string; originalUrl?: string }): Promise<{ totalClicks: number; ipAddresses: string[] }> {
-    // console.log("getClickStats called with:", { shortCode, originalUrl });
-    if (!shortCode && !originalUrl) {
-      throw new Error("Must provide either shortCode or originalUrl");
-    }
-    const url = shortCode 
-      ? await this.urlRepository.findByShortCode(shortCode) 
-      : await this.urlRepository.findByOriginalUrl(originalUrl!);
-    // console.log("Found URL:", url);
-    if (!url) throw new Error(shortCode ? "Short URL not found" : "Original URL not found");
+    if (!shortCode && !originalUrl) throw new Error("Must provide either shortCode or originalUrl");
     return this.urlRepository.getClickStats({ shortCode, originalUrl });
   }
+
+  async getLocationStats({ shortCode, originalUrl }: { shortCode?: string; originalUrl?: string }): Promise<LocationStats> {
+    if (!shortCode && !originalUrl) throw new Error("Must provide either shortCode or originalUrl");
+    console.log("shortCode", shortCode);
+    console.log("originalUrl", originalUrl);
+    return this.urlRepository.getLocationStats({ shortCode, originalUrl });
+  }
+
+  async getUrlHistory(): Promise<UrlHistoryItem[]> {
+    return this.urlRepository.getAllUrlsWithClickCount();
+  }
+
+  
 }

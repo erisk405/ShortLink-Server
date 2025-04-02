@@ -25,15 +25,23 @@ export class UrlController {
     }
   }
 
-  async getStats(req: Request, res: Response): Promise<void> {
+
+  async getLocationStats(req: Request, res: Response): Promise<void> {
     try {
-      // console.log("req.query:", req.query); // ดูค่าที่ส่งเข้ามาทั้งหมด
       const { shortCode, originalUrl } = req.query as { shortCode?: string; originalUrl?: string };
-      // console.log("Extracted shortCode:", shortCode, "originalUrl:", originalUrl);
-      const stats = await this.urlService.getClickStats({ shortCode, originalUrl });
-      res.json(stats);
+      const locationStats = await this.urlService.getLocationStats({ shortCode, originalUrl });
+      res.json(locationStats);
     } catch (error: any) {
       res.status(404).json({ error: error.message });
+    }
+  }
+  
+  async getUrlHistory(req: Request, res: Response): Promise<void> {
+    try {
+      const history = await this.urlService.getUrlHistory();
+      res.json(history);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
     }
   }
 }
