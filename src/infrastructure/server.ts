@@ -15,6 +15,7 @@ const geoLocationService = new IpInfoGeoLocationService(process.env.IPINFO_API_K
 const urlService = new UrlService(urlRepository, geoLocationService);
 const urlController = new UrlController(urlService);
 
+app.set("trust proxy", true); // บอก Express ว่าอยู่หลัง proxy
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {

@@ -17,7 +17,8 @@ export class UrlController {
   async redirect(req: Request, res: Response): Promise<void> {
     try {
       const { shortCode } = req.params;
-      const ipAddress = req.ip;
+      const ipAddress = req.headers["x-forwarded-for"]?.toString() || req.ip; // ดึงจาก header ก่อน ถ้าไม่มีค่อยใช้ req.ip
+      console.log("Detected IP:", ipAddress); // เพิ่ม log เพื่อ debug
       const originalUrl = await this.urlService.redirectUrl(shortCode, ipAddress);
       res.redirect(301, originalUrl);
     } catch (error: any) {

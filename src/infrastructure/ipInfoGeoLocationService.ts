@@ -10,6 +10,7 @@ export class IpInfoGeoLocationService implements GeoLocationService {
 
   async getLocationFromIp(ip: string): Promise<GeoLocationData> {
     // กรณี IP เป็น localhost หรือ IP ส่วนตัว
+    console.log("Fetching location for IP:", ip); // เพิ่ม log เพื่อ debug
     if (ip === '::1' || ip === '127.0.0.1' || ip.startsWith('192.168.') || ip.startsWith('10.')) {
       return {
         ip,
