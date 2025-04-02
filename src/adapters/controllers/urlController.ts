@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { UrlService } from "../../domain/services/urlService";
 
 export class UrlController {
-  constructor(private urlService: UrlService) {}
+  constructor(private urlService: UrlService) { }
 
   async shorten(req: Request, res: Response): Promise<void> {
     try {
@@ -17,8 +17,12 @@ export class UrlController {
   async redirect(req: Request, res: Response): Promise<void> {
     try {
       const { shortCode } = req.params;
-      const ipAddress = req.headers["x-forwarded-for"]?.toString() || req.ip; // ดึงจาก header ก่อน ถ้าไม่มีค่อยใช้ req.ip
-      console.log("Detected IP:", ipAddress); // เพิ่ม log เพื่อ debug
+      // ดึง IP จาก X-Forwarded-For และเลือก IP แรก (client IP)
+      const forwardedFor = req.headers["x-forwarded-for"];
+      const ipAddress = Array.isArray(forwardedFor)
+        ? forwardedFor[0]
+        : forwardedFor?.toString().split(",")[0].trim() || req.ip;
+      console.log("Detected IP:", ipAddress); // Log IP ที่เลือก
       const originalUrl = await this.urlService.redirectUrl(shortCode, ipAddress);
       res.redirect(301, originalUrl);
     } catch (error: any) {
@@ -36,7 +40,7 @@ export class UrlController {
       res.status(404).json({ error: error.message });
     }
   }
-  
+
   async getUrlHistory(req: Request, res: Response): Promise<void> {
     try {
       const history = await this.urlService.getUrlHistory();

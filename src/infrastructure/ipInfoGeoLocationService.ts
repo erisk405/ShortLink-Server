@@ -23,18 +23,15 @@ export class IpInfoGeoLocationService implements GeoLocationService {
 
     try {
       const response = await axios.get(`https://ipinfo.io/${ip}/json?token=${this.apiKey}`);
-      
-      // แยกข้อมูลละติจูด/ลองจิจูดออกจากสตริง "lat,lng"
-      const [latitude, longitude] = response.data.loc 
-        ? response.data.loc.split(',').map(Number) 
+      const [latitude, longitude] = response.data.loc
+        ? response.data.loc.split(",").map(Number)
         : [0, 0];
-      
       return {
         ip,
-        country: response.data.country || 'Unknown',
-        city: response.data.city || 'Unknown',
+        country: response.data.country || "Unknown",
+        city: response.data.city || "Unknown",
         latitude,
-        longitude
+        longitude,
       };
     } catch (error) {
       console.error(`Error getting location for IP ${ip}:`, error);
