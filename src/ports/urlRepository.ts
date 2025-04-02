@@ -26,7 +26,7 @@ export interface UrlRepository {
   updateShortCode(id: number, shortCode: string): Promise<ShortUrl>;
   findByShortCode(shortCode: string): Promise<ShortUrl | null>;
   incrementClick(shortCode: string, ipAddress?: string): Promise<number>;
-  getClickStats(params: { shortCode?: string; originalUrl?: string }): Promise<{ totalClicks: number; ipAddresses: string[] }>;
+  // getClickStats(params: { shortCode?: string; originalUrl?: string }): Promise<{ totalClicks: number; ipAddresses: string[] }>;
   findByOriginalUrl(originalUrl: string): Promise<ShortUrl | null>;
   saveGeoLocation(clickId: number, geoData: GeoLocationData): Promise<void>;
   getLocationStats(params: { shortCode?: string; originalUrl?: string }): Promise<LocationStats>;

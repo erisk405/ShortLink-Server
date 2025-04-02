@@ -42,10 +42,10 @@ export class UrlService {
     return url.originalUrl;
   }
 
-  async getClickStats({ shortCode, originalUrl }: { shortCode?: string; originalUrl?: string }): Promise<{ totalClicks: number; ipAddresses: string[] }> {
-    if (!shortCode && !originalUrl) throw new Error("Must provide either shortCode or originalUrl");
-    return this.urlRepository.getClickStats({ shortCode, originalUrl });
-  }
+  // async getClickStats({ shortCode, originalUrl }: { shortCode?: string; originalUrl?: string }): Promise<{ totalClicks: number; ipAddresses: string[] }> {
+  //   if (!shortCode && !originalUrl) throw new Error("Must provide either shortCode or originalUrl");
+  //   return this.urlRepository.getClickStats({ shortCode, originalUrl });
+  // }
 
   async getLocationStats({ shortCode, originalUrl }: { shortCode?: string; originalUrl?: string }): Promise<LocationStats> {
     if (!shortCode && !originalUrl) throw new Error("Must provide either shortCode or originalUrl");

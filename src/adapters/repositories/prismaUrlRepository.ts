@@ -54,19 +54,20 @@ export class PrismaUrlRepository implements UrlRepository {
     return click.id; // คืนค่า clickId
   }
 
-  async getClickStats(params: { shortCode?: string; originalUrl?: string }): Promise<{ totalClicks: number; ipAddresses: string[] }> {
-    const { shortCode, originalUrl } = params;
-    const url = shortCode
-      ? await this.prisma.shortUrl.findUnique({ where: { shortCode } })
-      : await this.prisma.shortUrl.findFirst({ where: { originalUrl } });
-    if (!url) throw new Error("URL not found");
+  // async getClickStats(params: { shortCode?: string; originalUrl?: string }): Promise<{ totalClicks: number; ipAddresses: string[] }> {
+  //   const { shortCode, originalUrl } = params;
+  //   const url = shortCode
+      // ? await this.prisma.shortUrl.findUnique({ where: { shortCode } })
+  //     : await this.prisma.shortUrl.findFirst({ where: { originalUrl } });
+  //   if (!url) throw new Error("URL not found");
 
-    const clicks = await this.prisma.click.findMany({
-      where: { shortUrlId: url.id },
-    });
-    const uniqueIPs = [...new Set(clicks.map(click => click.ipAddress || "unknown"))];
-    return { totalClicks: clicks.length, ipAddresses: uniqueIPs };
-  }
+  //   const clicks = await this.prisma.click.findMany({
+  //     where: { shortUrlId: url.id },
+  //   });
+    // const allIPs = clicks.map(click => click.ipAddress || "unknown");
+  //   const uniqueIPs = [...new Set(clicks.map(click => click.ipAddress || "unknown"))];//ใช้ Set เพื่อกรอง IP ที่ซ้ำกันออก โดยแปลง array ของ ipAddress ให้เหลือเฉพาะ IP ที่ไม่ซ้ำ
+  //   return { totalClicks: clicks.length, ipAddresses: uniqueIPs };
+  // }
 
   async saveGeoLocation(clickId: number, geoData: GeoLocationData): Promise<void> {
     await this.prisma.geoLocation.create({

@@ -24,6 +24,9 @@ export class UrlController {
         : forwardedFor?.toString().split(",")[0].trim() || req.ip;
       console.log("Detected IP:", ipAddress); // Log IP ที่เลือก
       const originalUrl = await this.urlService.redirectUrl(shortCode, ipAddress);
+      //302 HTTP Status Code 302 Found: เป็นการ redirect ชั่วคราว (temporary redirect) ซึ่ง browser จะไม่ cache และจะส่ง request ไปยัง server ทุกครั้ง
+      //301 Moved Permanently บอก browser ว่า URL นี้ย้ายไปยัง originalUrl ถาวร และให้ cache ผลลัพธ์นี้ไว้ ครั้งต่อไป browser จะข้ามการติดต่อ server และ 
+      //redirect ไปยัง originalUrl โดยตรงจาก cache
       res.redirect(301, originalUrl);
     } catch (error: any) {
       res.status(404).json({ error: error.message });
