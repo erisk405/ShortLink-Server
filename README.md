@@ -109,7 +109,7 @@
 ### 1️⃣ Clone Repository
 ```bash
 git clone https://github.com/erisk405/ShortLink-Server.git
-cd url-shortener
+cd ShortLink-Server
 ```
 ### 2️⃣ Install Dependencies
 ```bash
